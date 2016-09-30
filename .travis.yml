@@ -48,7 +48,7 @@ branches:
     - /^release-.*$/
 
 before_install:
-  - sh -c "if [ '$PERFORMANCE' != '0' ]; then ../$GITREPO/travis/prepare-performance.sh $DB $TRAVIS_PHP_VERSION; fi"
+  - sh -c "if [ '$PERFORMANCE' != '0' ]; then travis/prepare-performance.sh $DB $TRAVIS_PHP_VERSION; fi"
 
 install:
   - travis_retry composer install --no-interaction --prefer-source
@@ -61,7 +61,7 @@ install:
 
 before_script:
   - travis/setup-database.sh $DB $TRAVIS_PHP_VERSION
-  - sh -c "if [ '$PERFORMANCE' != '0' ]; then ../$GITREPO/travis/run-performance.sh $DB $TRAVIS_PHP_VERSION; fi"
+  - sh -c "if [ '$PERFORMANCE' != '0' ]; then travis/run-performance.sh $DB $TRAVIS_PHP_VERSION; fi"
 
 script:
   - sh -c "if [ '$SNIFF' != '0' ]; then travis/ext-sniff.sh $DB $TRAVIS_PHP_VERSION $EXTNAME; fi"
