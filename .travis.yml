@@ -37,6 +37,7 @@ env:
     - IMAGE_ICC="0"    # Should we run icc profile sniffer on your images?
     - EPV="1"          # Should we run EPV (Extension Pre Validator) on your code?
     - COVERAGE="1"     # Should we send code coverage?
+    - PERFORMANCE="1"  # Should we run performance analysis?
     - PHPBB_BRANCH="3.1.x"
 
 branches:
@@ -45,6 +46,9 @@ branches:
     - develop
     - /^develop-.*$/
     - /^release-.*$/
+
+before_install:
+  - sh -c "if [ '$PERFORMANCE' != '0' ]; then ../$GITREPO/travis/prepare-performance.sh $DB $TRAVIS_PHP_VERSION; fi"
 
 install:
   - travis_retry composer install --no-interaction --prefer-source
@@ -57,6 +61,7 @@ install:
 
 before_script:
   - travis/setup-database.sh $DB $TRAVIS_PHP_VERSION
+  - sh -c "if [ '$PERFORMANCE' != '0' ]; then ../$GITREPO/travis/run-performance.sh $DB $TRAVIS_PHP_VERSION; fi"
 
 script:
   - sh -c "if [ '$SNIFF' != '0' ]; then travis/ext-sniff.sh $DB $TRAVIS_PHP_VERSION $EXTNAME; fi"
